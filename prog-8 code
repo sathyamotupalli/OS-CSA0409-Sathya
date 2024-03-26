@@ -1,0 +1,55 @@
+#include <stdio.h>
+
+struct Process {
+    int process_id;
+    int arrival_time;
+    int burst_time;
+    int remaining_time;
+};
+
+void roundRobinScheduling(struct Process processes[], int n, int quantum) {
+    int total_time = 0;
+    int completed_processes = 0;
+
+    printf("\nGantt Chart:\n");
+
+    while (completed_processes < n) {
+        for (int i = 0; i < n; i++) {
+            if (processes[i].remaining_time > 0) {
+                int execution_time = (processes[i].remaining_time < quantum) ? processes[i].remaining_time : quantum;
+                processes[i].remaining_time -= execution_time;
+                total_time += execution_time;
+
+                printf("P%d ", processes[i].process_id);
+
+                if (processes[i].remaining_time == 0) {
+                    completed_processes++;
+                }
+            }
+        }
+    }
+
+    printf("\n\n");
+}
+
+int main() {
+    int n, quantum;
+
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    printf("Enter the time quantum: ");
+    scanf("%d", &quantum);
+
+    struct Process processes[n];
+    for (int i = 0; i < n; i++) {
+        processes[i].process_id = i + 1;
+        printf("Enter arrival time and burst time for process P%d: ", i + 1);
+        scanf("%d %d", &processes[i].arrival_time, &processes[i].burst_time);
+        processes[i].remaining_time = processes[i].burst_time;
+    }
+
+    roundRobinScheduling(processes, n, quantum);
+
+    return 0;
+}
